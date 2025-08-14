@@ -160,7 +160,7 @@ button[type="submit"]:hover {
     text-align: left;
 }
 
-#export-json {
+#export-excel {
     padding: 8px 15px;
     background-color: var(--primary-color);
     color: var(--text-color);
@@ -172,7 +172,7 @@ button[type="submit"]:hover {
     transition: background-color 0.3s ease;
 }
 
-#export-json:hover {
+#export-excel:hover {
     background-color: #FFD54F; /* Lighter Amber */
 }
 

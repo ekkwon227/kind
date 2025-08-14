@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     // !!! 중요: README.md 파일을 읽고, 배포된 자신의 Google Apps Script 웹 앱 URL로 변경하세요.
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxxS8ZyvXTaSxg2Z0Z58_cAcT68RKZxMf7_ud4DW_FmeX2dbagE8uUeeyeb2GNmHiWLcw/exec';
+    const WEB_APP_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
     const recordForm = document.getElementById('record-form');
     const recordsContainer = document.getElementById('records-container');
     const dateInput = document.getElementById('date');
-    const exportButton = document.getElementById('export-json');
+    const exportButton = document.getElementById('export-excel');
     const moodChartCanvas = document.getElementById('mood-chart');
     let recordsCache = []; // 데이터 캐싱
     let moodChart;
@@ -137,19 +137,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // JSON 내보내기 이벤트 처리
+    // 엑셀 내보내기 이벤트 처리
     exportButton.addEventListener('click', () => {
-        const dataStr = JSON.stringify(recordsCache, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'my_kindness_records.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        if (recordsCache.length === 0) {
+            alert('내보낼 데이터가 없습니다.');
+            return;
+        }
+
+        // 데이터 시트 생성
+        const worksheet = XLSX.utils.json_to_sheet(recordsCache);
+        // 새 워크북 생성
+        const workbook = XLSX.utils.book_new();
+        // 워크북에 데이터 시트 추가
+        XLSX.utils.book_append_sheet(workbook, worksheet, "우리의 기록");
+
+        // 헤더 스타일링 (선택 사항)
+        const headers = Object.keys(recordsCache[0]);
+        const header_styles = { font: { bold: true } };
+        for(let i = 0; i < headers.length; i++){
+            const cell_ref = XLSX.utils.encode_cell({c:i, r:0});
+            if(worksheet[cell_ref]) {
+                worksheet[cell_ref].s = header_styles;
+            }
+        }
+
+        // 엑셀 파일 내보내기
+        XLSX.writeFile(workbook, "our_kindness_records.xlsx");
     });
 
     // 초기 데이터 로드
