@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(WEB_APP_URL, { method: 'GET', redirect: 'follow' });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             recordsCache = await response.json();
+
+            // 서버에서 받은 데이터가 배열인지 확인합니다. 배열이 아니면 Apps Script 에러일 가능성이 높습니다.
+            if (!Array.isArray(recordsCache)) {
+                console.error("Error data received from Google Apps Script:", recordsCache);
+                throw new Error('Google Apps Script에서 에러가 발생했습니다. 개발자 도구(F12)의 Console 탭에서 상세 정보를 확인하세요.');
+            }
             
             recordsContainer.innerHTML = '<p>데이터를 불러오는 중...</p>';
             // 최신순으로 정렬
