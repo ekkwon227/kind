@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             recordsContainer.innerHTML = '<p>데이터를 불러오는 중...</p>';
             // 최신순으로 정렬
-            recordsCache.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+            // Timestamp 기준으로 정렬 (더 정확함)
+            recordsCache.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
             
             recordsContainer.innerHTML = ''; // 로딩 메시지 제거
             recordsCache.forEach(addRecordToDOM);
@@ -45,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const row = document.createElement('div');
         row.classList.add('record-row');
 
-        const moodEmojis = { '행복': '😄', '뿌듯': '😎', '감사': '🙏', '감동': '😭' };
+        const moodEmojis = { '행복': '😄', '보통': '😐', '우울': '😔', '분노': '😡' };
         const typeText = { 'deed': '😊 선행했어요', 'help': '💖 도움받았어요' };
 
         row.innerHTML = `
